@@ -1,0 +1,54 @@
+.notification-container {
+    display: flex;
+    position: fixed;
+
+    top: 0;
+    bottom: 0;
+
+    padding: 10px;
+    width: 30%;
+
+    color: #fff;
+}
+
+.notification-container_tl,
+.notification-container_bl {
+    left: 0;
+}
+
+.notification-container_tr,
+.notification-container_br {
+    right: 0;
+}
+
+.notification-container_tl,
+.notification-container_tr {
+    flex-direction: column;
+}
+
+.notification-container_bl,
+.notification-container_br {
+    flex-direction: column-reverse;
+}
+
+.notification {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.notification-container_tl .notification:last-child,
+.notification-container_tr .notification:last-child {
+    margin-bottom: 0;
+}
+.notification-container_bl .notification:first-child,
+.notification-container_br .notification:first-child {
+    margin-bottom: 0;
+}
+.notification_alert {
+    background-color: #aa3939;
+}
+.notification_info {
+    background-color: #266;
+}
+.notification_warning {
+    background-color: #ffa900;
+}
