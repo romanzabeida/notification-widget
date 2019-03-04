@@ -12,7 +12,7 @@ class App extends Component<any> {
     > = React.createRef();
 
     componentDidMount(): void {
-        (window as any).NotificationWidget = this.notificationWidgetRef!.current;
+        (window as any).NotificationsWidget = this.notificationWidgetRef!.current;
     }
 
     render() {
