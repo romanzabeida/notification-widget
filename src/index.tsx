@@ -1,15 +1,30 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import { render } from 'react-dom';
 
-import { Notification, NotificationWidget } from './NotificationWidget';
+import { NotificationWidget } from './NotificationWidget';
+import './NotificationWidget/style/index.css';
 
-function App() {
-    return (
-        <div className="App">
-            <Notification message="msg" position="bl" type="info" />
-            <NotificationWidget />
-        </div>
-    );
+import './styles.css';
+
+class App extends Component<any> {
+    notificationWidgetRef: React.RefObject<
+        NotificationWidget
+    > = React.createRef();
+
+    componentDidMount(): void {
+        (window as any).NotificationWidget = this.notificationWidgetRef!.current;
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <NotificationWidget
+                    ref={this.notificationWidgetRef}
+                    dismissDelay={5000}
+                />
+            </div>
+        );
+    }
 }
 
 const rootElement = document.getElementById('root');
