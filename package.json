@@ -3,9 +3,11 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "classnames": "^2.2.6",
         "react": "^16.8.3",
         "react-dom": "^16.8.3",
-        "react-scripts": "2.1.5"
+        "react-scripts": "2.1.5",
+        "uuid": "^3.3.2"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -23,13 +25,15 @@
         "not op_mini all"
     ],
     "devDependencies": {
+        "@types/classnames": "^2.2.7",
         "@types/jest": "24.0.9",
         "@types/node": "11.10.4",
         "@types/react": "16.8.6",
         "@types/react-dom": "16.8.2",
-        "prettier": "^1.16.4",
+        "@types/uuid": "^3.4.4",
         "husky": "^1.3.1",
         "lint-staged": "^8.1.5",
+        "prettier": "^1.16.4",
         "typescript": "3.3.3333"
     },
     "husky": {
