@@ -13,7 +13,7 @@ type Notification = {
 };
 
 interface IProps {
-    dismissDelay: number;
+    dismissDelay?: number;
 }
 
 interface IState {
@@ -21,6 +21,10 @@ interface IState {
 }
 
 export class NotificationWidget extends PureComponent<IProps, IState> {
+    static defaultProps = {
+        dismissDelay: 10000
+    };
+
     constructor(props: IProps, state: IState) {
         super(props, state);
 
@@ -32,105 +36,80 @@ export class NotificationWidget extends PureComponent<IProps, IState> {
                 bl: []
             }
         };
+
+        this.notificationTimeoutHandler = this.notificationTimeoutHandler.bind(
+            this
+        );
+        this.renderNotificationsBlockByPosition = this.renderNotificationsBlockByPosition.bind(
+            this
+        );
     }
 
     render(): React.ReactElement {
         return (
             <Fragment>
-                <div className="notification-container notification-container_tl">
-                    <NotificationComponent
-                        id="1"
-                        message="msg"
-                        position="bl"
-                        type="info"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                    <NotificationComponent
-                        id="2"
-                        message="msg"
-                        position="bl"
-                        type="warning"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                    <NotificationComponent
-                        id="3"
-                        message="msg"
-                        position="bl"
-                        type="alert"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                </div>
-                <div className="notification-container notification-container_tr">
-                    <NotificationComponent
-                        id="1"
-                        message="msg"
-                        position="bl"
-                        type="info"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                    <NotificationComponent
-                        id="2"
-                        message="msg"
-                        position="bl"
-                        type="warning"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                    <NotificationComponent
-                        id="3"
-                        message="msg"
-                        position="bl"
-                        type="alert"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                </div>
-                <div className="notification-container notification-container_br">
-                    <NotificationComponent
-                        id="1"
-                        message="msg"
-                        position="bl"
-                        type="info"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                    <NotificationComponent
-                        id="2"
-                        message="msg"
-                        position="bl"
-                        type="warning"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                    <NotificationComponent
-                        id="3"
-                        message="msg"
-                        position="bl"
-                        type="alert"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                </div>
-                <div className="notification-container notification-container_bl">
-                    <NotificationComponent
-                        id="1"
-                        message="msg"
-                        position="bl"
-                        type="info"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                    <NotificationComponent
-                        id="2"
-                        message="msg"
-                        position="bl"
-                        type="warning"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                    <NotificationComponent
-                        id="3"
-                        message="msg"
-                        position="bl"
-                        type="alert"
-                        notificationTimeout={this._notificationTimeoutHandler}
-                    />
-                </div>
+                {this.renderNotificationsBlockByPosition('tl')}
+                {this.renderNotificationsBlockByPosition('tr')}
+                {this.renderNotificationsBlockByPosition('br')}
+                {this.renderNotificationsBlockByPosition('bl')}
             </Fragment>
         );
+    }
+
+    private renderNotificationsBlockByPosition(
+        position: NotificationPosition
+    ): React.ReactElement {
+        return (
+            <div
+                className={`notification-container notification-container_${position}`}
+            >
+                {this.state.notifications[position].map(
+                    (notification: Notification) => (
+                        <NotificationComponent
+                            {...notification}
+                            key={notification.id}
+                            dismissDelay={
+                                this.props.dismissDelay ||
+                                NotificationWidget.defaultProps.dismissDelay
+                            }
+                            notificationTimeoutHandler={
+                                this.notificationTimeoutHandler
+                            }
+                        />
+                    )
+                )}
+            </div>
+        );
+    }
+
+    private notificationTimeoutHandler(
+        position: NotificationPosition,
+        id: string
+    ): void {
+        const inStateNotifications = this.state.notifications;
+        const inStateNotificationsByPosition = inStateNotifications[position];
+        const notifications = {
+            ...inStateNotifications,
+            [position]: inStateNotificationsByPosition.filter(
+                notification => notification.id !== id
+            )
+        };
+        this.setState({ notifications });
+    }
+
+    private isMessage(message: any): boolean {
+        const properType = typeof message === 'string';
+        const notEmpty = !!message;
+
+        return properType && notEmpty;
+    }
+
+    private isNotificationPosition(position: any): boolean {
+        return ['tl', 'tr', 'br', 'bl'].includes(position);
+    }
+
+    private isNotificationType(type: any): boolean {
+        return ['alert', 'info', 'warning'].includes(type);
     }
 
     show(
@@ -138,24 +117,30 @@ export class NotificationWidget extends PureComponent<IProps, IState> {
         position: NotificationPosition,
         type: NotificationType
     ): string {
+        if (!this.isMessage(message)) {
+            throw new Error('`message` argument should be a non empty string.');
+        }
+        if (!this.isNotificationPosition(position)) {
+            throw new Error(
+                '`position` argument should be one of `tl` `tr` `br` `bl`.'
+            );
+        }
+        if (!this.isNotificationType(type)) {
+            throw new Error(
+                '`type` argument should be one of `alert` `info` `warning`.'
+            );
+        }
+
         const id = uuid();
-        // Sorry guys, I wasn't able to conquer TS error: Element implicitly has an 'any' type because type '{ tl: Notification[]; tr: Notification[]; br: Notification[]; bl: Notification[]; }' has no index signature.
-        // @ts-ignore
-        const inStateNotifications = this.state.notifications[type];
+        const inStateNotifications = this.state.notifications;
+        const inStateNotificationsByPosition = inStateNotifications[position];
         const notification = { id, message, position, type };
         const notifications = {
             ...inStateNotifications,
-            [type]: [...inStateNotifications, notification]
+            [position]: [...inStateNotificationsByPosition, notification]
         };
         this.setState({ notifications });
 
         return id;
-    }
-
-    _notificationTimeoutHandler(
-        position: NotificationPosition,
-        id: string
-    ): void {
-        console.log(id);
     }
 }
