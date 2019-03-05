@@ -1,8 +1,11 @@
 import React from 'react';
 import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import { NotificationWidget, DismissDelay } from '../NotificationWidget';
-import { Position, Type } from '../types';
+import {
+    NotificationWidget,
+    DismissDelay
+} from '../NotificationWidget/NotificationWidget';
+import { Position, Type } from '../NotificationWidget/types';
 
 configure({ adapter: new Adapter() });
 jest.useFakeTimers();
