@@ -84,7 +84,7 @@ export class NotificationWidget extends PureComponent<Props, State> {
         type: NotificationType
     ): void {
         if (!isNotEmptyString(message)) {
-            throw new Error('`message` argument should be a non empty string.');
+            throw new Error(`'message' argument should be a non empty string.`);
         }
         if (!isNotificationPosition(position)) {
             throw new Error(
