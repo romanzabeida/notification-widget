@@ -6,9 +6,9 @@ import {
     Notification,
     Position,
     Type,
-    isNotEmptyString,
-    isNotificationPosition,
-    isNotificationType
+    assertIfEmptyString,
+    assertIfNonPosition,
+    assertIfNotType
 } from './types';
 
 export const DismissDelay = 10; // seconds
@@ -70,25 +70,9 @@ export class NotificationWidget extends PureComponent<Props, State> {
     }
 
     show(message: string, position: Position, type: Type): void {
-        if (!isNotEmptyString(message)) {
-            throw new Error(`'message' argument should be a non empty string.`);
-        }
-        if (!isNotificationPosition(position)) {
-            throw new Error(
-                `'position' argument should be one of '${
-                    Position.TopLeft
-                }' | '${Position.TopRight}' | '${Position.BottomRight}' | '${
-                    Position.BottomLeft
-                }'.`
-            );
-        }
-        if (!isNotificationType(type)) {
-            throw new Error(
-                `'type' argument should be one of '${Type.Alert}' | '${
-                    Type.Info
-                }' | '${Type.Warning}'.`
-            );
-        }
+        assertIfEmptyString(message);
+        assertIfNonPosition(position);
+        assertIfNotType(type);
 
         const id: number = window.setTimeout(
             () => this.notificationTimeoutHandler(position, id),

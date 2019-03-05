@@ -18,22 +18,37 @@ export type Notification = {
     type: Type;
 };
 
-export function isNotEmptyString(message: any): boolean {
-    const isString = typeof message === 'string';
-    const isNotEmpty = !!message;
-
-    return isString && isNotEmpty;
+export function assertIfEmptyString(message: any): void {
+    if (typeof message !== 'string' || !message) {
+        throw new Error(`'message' argument should be a non empty string.`);
+    }
 }
 
-export function isNotificationPosition(position: any): boolean {
-    return [
+export function assertIfNonPosition(position: any): void {
+    const isPosition = [
         Position.TopLeft,
         Position.TopRight,
         Position.BottomRight,
         Position.BottomLeft
     ].includes(position);
+
+    if (!isPosition) {
+        throw new Error(
+            `'position' argument should be one of '${Position.TopLeft}' | '${
+                Position.TopRight
+            }' | '${Position.BottomRight}' | '${Position.BottomLeft}'.`
+        );
+    }
 }
 
-export function isNotificationType(type: any): boolean {
-    return [Type.Alert, Type.Info, Type.Warning].includes(type);
+export function assertIfNotType(type: any): void {
+    const isType = [Type.Alert, Type.Info, Type.Warning].includes(type);
+
+    if (!isType) {
+        throw new Error(
+            `'type' argument should be one of '${Type.Alert}' | '${
+                Type.Info
+            }' | '${Type.Warning}'.`
+        );
+    }
 }
