@@ -20,7 +20,7 @@ export class NotificationComponent extends Component<Props> {
         const timeoutId = setTimeout(() => {
             this.removeNotification();
             clearTimeout(timeoutId);
-        }, 5000);
+        }, this.props.dismissDelay);
     }
 
     render() {

@@ -1,6 +1,7 @@
 import React, { Fragment, PureComponent } from 'react';
 
 import './style/index.css';
+import { DismissDelay } from './constants';
 import { NotificationComponent } from './Notification';
 import { Notification, NotificationPosition, NotificationType } from './types';
 
@@ -12,7 +13,7 @@ type State = { [key in NotificationPosition]: Notification[] };
 
 export class NotificationWidget extends PureComponent<Props, State> {
     static defaultProps = {
-        dismissDelay: 10000
+        dismissDelay: DismissDelay
     };
 
     constructor(props: Props, state: State) {
