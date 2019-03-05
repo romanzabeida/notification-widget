@@ -1,58 +1,50 @@
-import React, { PureComponent, Fragment } from 'react';
-import { v4 as uuid } from 'uuid';
+import React, { Fragment, PureComponent } from 'react';
 
-import { Notification as NotificationComponent } from './Notification';
+import './style/index.css';
+import { DismissDelay } from './constants';
+import { NotificationComponent } from './Notification';
+import {
+    Notification,
+    NotificationPosition,
+    NotificationType,
+    isNotEmptyString,
+    isNotificationPosition,
+    isNotificationType
+} from './types';
 
-// TODO: use enums here instead of union-types
-type NotificationPosition = 'tl' | 'tr' | 'br' | 'bl';
-type NotificationType = 'alert' | 'info' | 'warning';
-type Notification = {
-    id: string;
-    message: string;
-    position: NotificationPosition;
-    type: NotificationType;
+type Props = {
+    dismissDelay?: number;
 };
 
-interface IProps {
-    dismissDelay?: number;
-}
+type State = { [key in NotificationPosition]: Notification[] };
 
-interface IState {
-    notifications: { [key in NotificationPosition]: Notification[] };
-}
-
-export class NotificationWidget extends PureComponent<IProps, IState> {
+export class NotificationWidget extends PureComponent<Props, State> {
     static defaultProps = {
-        dismissDelay: 10000
+        dismissDelay: DismissDelay
     };
 
-    constructor(props: IProps, state: IState) {
-        super(props, state);
-
-        this.state = {
-            notifications: {
-                tl: [],
-                tr: [],
-                br: [],
-                bl: []
-            }
-        };
-
-        this.notificationTimeoutHandler = this.notificationTimeoutHandler.bind(
-            this
-        );
-        this.renderNotificationsBlockByPosition = this.renderNotificationsBlockByPosition.bind(
-            this
-        );
-    }
+    state: State = {
+        [NotificationPosition.TopLeft]: [],
+        [NotificationPosition.TopRight]: [],
+        [NotificationPosition.BottomRight]: [],
+        [NotificationPosition.BottomLeft]: []
+    };
 
     render(): React.ReactElement {
         return (
             <Fragment>
-                {this.renderNotificationsBlockByPosition('tl')}
-                {this.renderNotificationsBlockByPosition('tr')}
-                {this.renderNotificationsBlockByPosition('br')}
-                {this.renderNotificationsBlockByPosition('bl')}
+                {this.renderNotificationsBlockByPosition(
+                    NotificationPosition.TopLeft
+                )}
+                {this.renderNotificationsBlockByPosition(
+                    NotificationPosition.TopRight
+                )}
+                {this.renderNotificationsBlockByPosition(
+                    NotificationPosition.BottomRight
+                )}
+                {this.renderNotificationsBlockByPosition(
+                    NotificationPosition.BottomLeft
+                )}
             </Fragment>
         );
     }
@@ -64,85 +56,63 @@ export class NotificationWidget extends PureComponent<IProps, IState> {
             <div
                 className={`notification-container notification-container_${position}`}
             >
-                {this.state.notifications[position].map(
-                    (notification: Notification) => (
-                        <NotificationComponent
-                            {...notification}
-                            key={notification.id}
-                            dismissDelay={
-                                this.props.dismissDelay ||
-                                NotificationWidget.defaultProps.dismissDelay
-                            }
-                            notificationTimeoutHandler={
-                                this.notificationTimeoutHandler
-                            }
-                        />
-                    )
-                )}
+                {this.state[position].map((notification: Notification) => (
+                    <NotificationComponent
+                        {...notification}
+                        key={notification.id}
+                    />
+                ))}
             </div>
         );
     }
 
     private notificationTimeoutHandler(
         position: NotificationPosition,
-        id: string
+        id: number
     ): void {
-        const inStateNotifications = this.state.notifications;
-        const inStateNotificationsByPosition = inStateNotifications[position];
-        const notifications = {
-            ...inStateNotifications,
-            [position]: inStateNotificationsByPosition.filter(
+        this.setState({
+            ...this.state,
+            [position]: this.state[position].filter(
                 notification => notification.id !== id
             )
-        };
-        this.setState({ notifications });
-    }
-
-    private isMessage(message: any): boolean {
-        const properType = typeof message === 'string';
-        const notEmpty = !!message;
-
-        return properType && notEmpty;
-    }
-
-    private isNotificationPosition(position: any): boolean {
-        return ['tl', 'tr', 'br', 'bl'].includes(position);
-    }
-
-    private isNotificationType(type: any): boolean {
-        return ['alert', 'info', 'warning'].includes(type);
+        });
     }
 
     show(
         message: string,
         position: NotificationPosition,
         type: NotificationType
-    ): string {
-        if (!this.isMessage(message)) {
+    ): void {
+        if (!isNotEmptyString(message)) {
             throw new Error('`message` argument should be a non empty string.');
         }
-        if (!this.isNotificationPosition(position)) {
+        if (!isNotificationPosition(position)) {
             throw new Error(
-                '`position` argument should be one of `tl` `tr` `br` `bl`.'
+                `'position' argument should be one of '${
+                    NotificationPosition.TopLeft
+                }' | '${NotificationPosition.TopRight}' | '${
+                    NotificationPosition.BottomRight
+                }' | '${NotificationPosition.BottomLeft}'.`
             );
         }
-        if (!this.isNotificationType(type)) {
+        if (!isNotificationType(type)) {
             throw new Error(
-                '`type` argument should be one of `alert` `info` `warning`.'
+                `'type' argument should be one of '${
+                    NotificationType.Alert
+                }' | '${NotificationType.Info}' | '${
+                    NotificationType.Warning
+                }'.`
             );
         }
 
-        // TODO: pass down to component
-        const id = uuid();
-        const inStateNotifications = this.state.notifications;
-        const inStateNotificationsByPosition = inStateNotifications[position];
+        const id: number = setTimeout(
+            () => this.notificationTimeoutHandler(position, id),
+            this.props.dismissDelay
+        );
         const notification = { id, message, position, type };
-        const notifications = {
-            ...inStateNotifications,
-            [position]: [...inStateNotificationsByPosition, notification]
-        };
-        this.setState({ notifications });
-
-        return id;
+        this.setState({
+            ...this.state,
+            [position]: [...this.state[position], notification]
+        });
     }
 }
