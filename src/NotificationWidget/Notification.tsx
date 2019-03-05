@@ -3,27 +3,9 @@ import classnames from 'classnames';
 
 import { Notification, NotificationType } from './types';
 
-type Props = {
-    notification: Notification;
-    dismissDelay: number;
-    notificationTimeoutHandler: (notification: Notification) => void;
-};
-
-export class NotificationComponent extends Component<Props> {
-    constructor(props: Props) {
-        super(props);
-
-        this.removeNotification = this.removeNotification.bind(this);
-    }
-
-    componentDidMount(): void {
-        setTimeout(() => {
-            this.removeNotification();
-        }, this.props.dismissDelay);
-    }
-
+export class NotificationComponent extends Component<Notification> {
     render() {
-        const { type } = this.props.notification;
+        const { type, id, message } = this.props;
 
         const className = classnames('notification', {
             notification_alert: type === NotificationType.Alert,
@@ -31,10 +13,10 @@ export class NotificationComponent extends Component<Props> {
             notification_warning: type === NotificationType.Warning
         });
 
-        return <div className={className}>I'm notification</div>;
-    }
-
-    private removeNotification(): void {
-        this.props.notificationTimeoutHandler(this.props.notification);
+        return (
+            <div className={className}>
+                {id} {message}
+            </div>
+        );
     }
 }

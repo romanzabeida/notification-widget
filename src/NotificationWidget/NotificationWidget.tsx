@@ -16,23 +16,12 @@ export class NotificationWidget extends PureComponent<Props, State> {
         dismissDelay: DismissDelay
     };
 
-    constructor(props: Props, state: State) {
-        super(props, state);
-
-        this.state = {
-            [NotificationPosition.TopLeft]: [],
-            [NotificationPosition.TopRight]: [],
-            [NotificationPosition.BottomRight]: [],
-            [NotificationPosition.BottomLeft]: []
-        };
-
-        this.notificationTimeoutHandler = this.notificationTimeoutHandler.bind(
-            this
-        );
-        this.renderNotificationsBlockByPosition = this.renderNotificationsBlockByPosition.bind(
-            this
-        );
-    }
+    state: State = {
+        [NotificationPosition.TopLeft]: [],
+        [NotificationPosition.TopRight]: [],
+        [NotificationPosition.BottomRight]: [],
+        [NotificationPosition.BottomLeft]: []
+    };
 
     render(): React.ReactElement {
         return (
@@ -60,31 +49,25 @@ export class NotificationWidget extends PureComponent<Props, State> {
             <div
                 className={`notification-container notification-container_${position}`}
             >
-                {this.state[position].map(
-                    (notification: Notification, idx: number) => (
-                        <NotificationComponent
-                            notification={notification}
-                            key={idx}
-                            dismissDelay={
-                                this.props.dismissDelay ||
-                                NotificationWidget.defaultProps.dismissDelay
-                            }
-                            notificationTimeoutHandler={
-                                this.notificationTimeoutHandler
-                            }
-                        />
-                    )
-                )}
+                {this.state[position].map((notification: Notification) => (
+                    <NotificationComponent
+                        {...notification}
+                        key={notification.id}
+                    />
+                ))}
             </div>
         );
     }
 
-    private notificationTimeoutHandler(notification: Notification): void {
-        const { position } = notification;
-
+    private notificationTimeoutHandler(
+        position: NotificationPosition,
+        id: number
+    ): void {
         this.setState({
             ...this.state,
-            [position]: this.state[position].filter(n => notification !== n)
+            [position]: this.state[position].filter(
+                notification => notification.id !== id
+            )
         });
     }
 
@@ -139,7 +122,11 @@ export class NotificationWidget extends PureComponent<Props, State> {
             );
         }
 
-        const notification = { message, position, type };
+        const id: number = setTimeout(
+            () => this.notificationTimeoutHandler(position, id),
+            this.props.dismissDelay
+        );
+        const notification = { id, message, position, type };
         this.setState({
             ...this.state,
             [position]: [...this.state[position], notification]

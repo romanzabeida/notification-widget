@@ -12,6 +12,7 @@ export enum NotificationType {
 }
 
 export type Notification = {
+    id: number;
     message: string;
     position: NotificationPosition;
     type: NotificationType;
