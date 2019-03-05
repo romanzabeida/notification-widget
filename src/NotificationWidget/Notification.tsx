@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 
-import { Notification, NotificationType } from './types';
+import { Notification, Type } from './types';
 
 export class NotificationComponent extends Component<Notification> {
     render() {
         const { type, id, message } = this.props;
 
         const className = classnames('notification', {
-            notification_alert: type === NotificationType.Alert,
-            notification_info: type === NotificationType.Info,
-            notification_warning: type === NotificationType.Warning
+            notification_alert: type === Type.Alert,
+            notification_info: type === Type.Info,
+            notification_warning: type === Type.Warning
         });
 
         return (

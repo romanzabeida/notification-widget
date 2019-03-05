@@ -23,7 +23,7 @@ class App extends Component<any> {
             <div className="App">
                 <NotificationWidget
                     ref={this.notificationWidgetRef}
-                    dismissDelay={5000}
+                    dismissDelay={5}
                 />
             </div>
         );

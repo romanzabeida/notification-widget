@@ -4,8 +4,8 @@ import './style/index.css';
 import { NotificationComponent } from './Notification';
 import {
     Notification,
-    NotificationPosition,
-    NotificationType,
+    Position,
+    Type,
     isNotEmptyString,
     isNotificationPosition,
     isNotificationType
@@ -18,7 +18,7 @@ type Props = {
     dismissDelay?: number;
 };
 
-type State = { [key in NotificationPosition]: Notification[] };
+type State = { [key in Position]: Notification[] };
 
 export class NotificationWidget extends PureComponent<Props, State> {
     static defaultProps = {
@@ -26,33 +26,25 @@ export class NotificationWidget extends PureComponent<Props, State> {
     };
 
     state: State = {
-        [NotificationPosition.TopLeft]: [],
-        [NotificationPosition.TopRight]: [],
-        [NotificationPosition.BottomRight]: [],
-        [NotificationPosition.BottomLeft]: []
+        [Position.TopLeft]: [],
+        [Position.TopRight]: [],
+        [Position.BottomRight]: [],
+        [Position.BottomLeft]: []
     };
 
     render(): React.ReactElement {
         return (
             <Fragment>
-                {this.renderNotificationsBlockByPosition(
-                    NotificationPosition.TopLeft
-                )}
-                {this.renderNotificationsBlockByPosition(
-                    NotificationPosition.TopRight
-                )}
-                {this.renderNotificationsBlockByPosition(
-                    NotificationPosition.BottomRight
-                )}
-                {this.renderNotificationsBlockByPosition(
-                    NotificationPosition.BottomLeft
-                )}
+                {this.renderNotificationsBlockByPosition(Position.TopLeft)}
+                {this.renderNotificationsBlockByPosition(Position.TopRight)}
+                {this.renderNotificationsBlockByPosition(Position.BottomRight)}
+                {this.renderNotificationsBlockByPosition(Position.BottomLeft)}
             </Fragment>
         );
     }
 
     private renderNotificationsBlockByPosition(
-        position: NotificationPosition
+        position: Position
     ): React.ReactElement {
         return (
             <div
@@ -68,10 +60,7 @@ export class NotificationWidget extends PureComponent<Props, State> {
         );
     }
 
-    private notificationTimeoutHandler(
-        position: NotificationPosition,
-        id: number
-    ): void {
+    private notificationTimeoutHandler(position: Position, id: number): void {
         this.setState({
             ...this.state,
             [position]: this.state[position].filter(
@@ -80,30 +69,24 @@ export class NotificationWidget extends PureComponent<Props, State> {
         });
     }
 
-    show(
-        message: string,
-        position: NotificationPosition,
-        type: NotificationType
-    ): void {
+    show(message: string, position: Position, type: Type): void {
         if (!isNotEmptyString(message)) {
             throw new Error(`'message' argument should be a non empty string.`);
         }
         if (!isNotificationPosition(position)) {
             throw new Error(
                 `'position' argument should be one of '${
-                    NotificationPosition.TopLeft
-                }' | '${NotificationPosition.TopRight}' | '${
-                    NotificationPosition.BottomRight
-                }' | '${NotificationPosition.BottomLeft}'.`
+                    Position.TopLeft
+                }' | '${Position.TopRight}' | '${Position.BottomRight}' | '${
+                    Position.BottomLeft
+                }'.`
             );
         }
         if (!isNotificationType(type)) {
             throw new Error(
-                `'type' argument should be one of '${
-                    NotificationType.Alert
-                }' | '${NotificationType.Info}' | '${
-                    NotificationType.Warning
-                }'.`
+                `'type' argument should be one of '${Type.Alert}' | '${
+                    Type.Info
+                }' | '${Type.Warning}'.`
             );
         }
 

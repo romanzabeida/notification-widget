@@ -1,11 +1,11 @@
-export enum NotificationPosition {
+export enum Position {
     TopLeft = 'tl',
     TopRight = 'tr',
     BottomRight = 'br',
     BottomLeft = 'bl'
 }
 
-export enum NotificationType {
+export enum Type {
     Alert = 'alert',
     Info = 'info',
     Warning = 'warning'
@@ -14,8 +14,8 @@ export enum NotificationType {
 export type Notification = {
     id: number;
     message: string;
-    position: NotificationPosition;
-    type: NotificationType;
+    position: Position;
+    type: Type;
 };
 
 export function isNotEmptyString(message: any): boolean {
@@ -27,17 +27,13 @@ export function isNotEmptyString(message: any): boolean {
 
 export function isNotificationPosition(position: any): boolean {
     return [
-        NotificationPosition.TopLeft,
-        NotificationPosition.TopRight,
-        NotificationPosition.BottomRight,
-        NotificationPosition.BottomLeft
+        Position.TopLeft,
+        Position.TopRight,
+        Position.BottomRight,
+        Position.BottomLeft
     ].includes(position);
 }
 
 export function isNotificationType(type: any): boolean {
-    return [
-        NotificationType.Alert,
-        NotificationType.Info,
-        NotificationType.Warning
-    ].includes(type);
+    return [Type.Alert, Type.Info, Type.Warning].includes(type);
 }
