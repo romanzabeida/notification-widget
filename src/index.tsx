@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 
 import { NotificationWidget } from './NotificationWidget';
-import './NotificationWidget/style/index.css';
 
 import './styles.css';
 

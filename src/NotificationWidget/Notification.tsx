@@ -1,19 +1,15 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 
-type Position = 'tl' | 'tr' | 'br' | 'bl';
-type Type = 'alert' | 'info' | 'warning';
+import { Notification, NotificationType } from './types';
 
 interface IProps {
-    id: string;
-    message: string;
-    position: Position;
-    type: Type;
+    notification: Notification;
     dismissDelay: number;
-    notificationTimeoutHandler: (position: Position, id: string) => void;
+    notificationTimeoutHandler: (notification: Notification) => void;
 }
 
-export class Notification extends Component<IProps> {
+export class NotificationComponent extends Component<IProps> {
     constructor(props: IProps) {
         super(props);
 
@@ -28,21 +24,18 @@ export class Notification extends Component<IProps> {
     }
 
     render() {
-        const { type } = this.props;
+        const { type } = this.props.notification;
 
         const className = classnames('notification', {
-            notification_alert: type === 'alert',
-            notification_info: type === 'info',
-            notification_warning: type === 'warning'
+            notification_alert: type === NotificationType.Alert,
+            notification_info: type === NotificationType.Info,
+            notification_warning: type === NotificationType.Warning
         });
 
         return <div className={className}>I'm notification</div>;
     }
 
     private removeNotification(): void {
-        this.props.notificationTimeoutHandler(
-            this.props.position,
-            this.props.id
-        );
+        this.props.notificationTimeoutHandler(this.props.notification);
     }
 }
