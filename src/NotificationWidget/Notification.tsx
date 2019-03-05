@@ -3,14 +3,14 @@ import classnames from 'classnames';
 
 import { Notification, NotificationType } from './types';
 
-interface IProps {
+type Props = {
     notification: Notification;
     dismissDelay: number;
     notificationTimeoutHandler: (notification: Notification) => void;
-}
+};
 
-export class NotificationComponent extends Component<IProps> {
-    constructor(props: IProps) {
+export class NotificationComponent extends Component<Props> {
+    constructor(props: Props) {
         super(props);
 
         this.removeNotification = this.removeNotification.bind(this);

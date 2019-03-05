@@ -1,33 +1,28 @@
 import React, { Fragment, PureComponent } from 'react';
-import { v4 as uuid } from 'uuid';
 
 import './style/index.css';
 import { NotificationComponent } from './Notification';
 import { Notification, NotificationPosition, NotificationType } from './types';
 
-interface IProps {
+type Props = {
     dismissDelay?: number;
-}
+};
 
-interface IState {
-    notifications: { [key in NotificationPosition]: Notification[] };
-}
+type State = { [key in NotificationPosition]: Notification[] };
 
-export class NotificationWidget extends PureComponent<IProps, IState> {
+export class NotificationWidget extends PureComponent<Props, State> {
     static defaultProps = {
         dismissDelay: 10000
     };
 
-    constructor(props: IProps, state: IState) {
+    constructor(props: Props, state: State) {
         super(props, state);
 
         this.state = {
-            notifications: {
-                [NotificationPosition.TopLeft]: [],
-                [NotificationPosition.TopRight]: [],
-                [NotificationPosition.BottomRight]: [],
-                [NotificationPosition.BottomLeft]: []
-            }
+            [NotificationPosition.TopLeft]: [],
+            [NotificationPosition.TopRight]: [],
+            [NotificationPosition.BottomRight]: [],
+            [NotificationPosition.BottomLeft]: []
         };
 
         this.notificationTimeoutHandler = this.notificationTimeoutHandler.bind(
@@ -64,7 +59,7 @@ export class NotificationWidget extends PureComponent<IProps, IState> {
             <div
                 className={`notification-container notification-container_${position}`}
             >
-                {this.state.notifications[position].map(
+                {this.state[position].map(
                     (notification: Notification, idx: number) => (
                         <NotificationComponent
                             notification={notification}
@@ -84,19 +79,12 @@ export class NotificationWidget extends PureComponent<IProps, IState> {
     }
 
     private notificationTimeoutHandler(notification: Notification): void {
-        const inStateNotifications = this.state.notifications;
-        const inStateNotificationsByPosition =
-            inStateNotifications[notification.position];
-        const notifications = {
-            ...inStateNotifications,
-            [notification.position]: inStateNotificationsByPosition.filter(
-                n => notification !== n
-            )
-        };
+        const { position } = notification;
 
-        console.log('notifications ->', notifications[notification.position]);
-
-        this.setState({ notifications });
+        this.setState({
+            ...this.state,
+            [position]: this.state[position].filter(n => notification !== n)
+        });
     }
 
     private isMessage(message: any): boolean {
@@ -150,13 +138,10 @@ export class NotificationWidget extends PureComponent<IProps, IState> {
             );
         }
 
-        const inStateNotifications = this.state.notifications;
-        const inStateNotificationsByPosition = inStateNotifications[position];
         const notification = { message, position, type };
-        const notifications = {
-            ...inStateNotifications,
-            [position]: [...inStateNotificationsByPosition, notification]
-        };
-        this.setState({ notifications });
+        this.setState({
+            ...this.state,
+            [position]: [...this.state[position], notification]
+        });
     }
 }
