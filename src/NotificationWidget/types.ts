@@ -1,5 +1,3 @@
-export type ValueOf<T> = T[keyof T];
-
 export enum NotificationPosition {
     TopLeft = 'tl',
     TopRight = 'tr',
