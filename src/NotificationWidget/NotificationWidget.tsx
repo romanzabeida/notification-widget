@@ -1,7 +1,6 @@
 import React, { Fragment, PureComponent } from 'react';
 
 import './style/index.css';
-import { DismissDelay } from './constants';
 import { NotificationComponent } from './Notification';
 import {
     Notification,
@@ -11,6 +10,9 @@ import {
     isNotificationPosition,
     isNotificationType
 } from './types';
+
+export const DismissDelay = 10; // seconds
+const milliseconds = 1000;
 
 type Props = {
     dismissDelay?: number;
@@ -105,9 +107,10 @@ export class NotificationWidget extends PureComponent<Props, State> {
             );
         }
 
-        const id: number = setTimeout(
+        const id: number = window.setTimeout(
             () => this.notificationTimeoutHandler(position, id),
-            this.props.dismissDelay
+            (this.props.dismissDelay ||
+                NotificationWidget.defaultProps.dismissDelay) * milliseconds
         );
         const notification = { id, message, position, type };
         this.setState({
