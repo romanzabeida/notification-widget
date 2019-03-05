@@ -17,9 +17,8 @@ export class NotificationComponent extends Component<Props> {
     }
 
     componentDidMount(): void {
-        const timeoutId = setTimeout(() => {
+        setTimeout(() => {
             this.removeNotification();
-            clearTimeout(timeoutId);
         }, this.props.dismissDelay);
     }
 
