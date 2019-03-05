@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 import { Notification as NotificationComponent } from './Notification';
 
+// TODO: use enums here instead of union-types
 type NotificationPosition = 'tl' | 'tr' | 'br' | 'bl';
 type NotificationType = 'alert' | 'info' | 'warning';
 type Notification = {
