@@ -3,7 +3,14 @@ import React, { Fragment, PureComponent } from 'react';
 import './style/index.css';
 import { DismissDelay } from './constants';
 import { NotificationComponent } from './Notification';
-import { Notification, NotificationPosition, NotificationType } from './types';
+import {
+    Notification,
+    NotificationPosition,
+    NotificationType,
+    isNotEmptyString,
+    isNotificationPosition,
+    isNotificationType
+} from './types';
 
 type Props = {
     dismissDelay?: number;
@@ -71,39 +78,15 @@ export class NotificationWidget extends PureComponent<Props, State> {
         });
     }
 
-    private isMessage(message: any): boolean {
-        const properType = typeof message === 'string';
-        const notEmpty = !!message;
-
-        return properType && notEmpty;
-    }
-
-    private isNotificationPosition(position: any): boolean {
-        return [
-            NotificationPosition.TopLeft,
-            NotificationPosition.TopRight,
-            NotificationPosition.BottomRight,
-            NotificationPosition.BottomLeft
-        ].includes(position);
-    }
-
-    private isNotificationType(type: any): boolean {
-        return [
-            NotificationType.Alert,
-            NotificationType.Info,
-            NotificationType.Warning
-        ].includes(type);
-    }
-
     show(
         message: string,
         position: NotificationPosition,
         type: NotificationType
     ): void {
-        if (!this.isMessage(message)) {
+        if (!isNotEmptyString(message)) {
             throw new Error('`message` argument should be a non empty string.');
         }
-        if (!this.isNotificationPosition(position)) {
+        if (!isNotificationPosition(position)) {
             throw new Error(
                 `'position' argument should be one of '${
                     NotificationPosition.TopLeft
@@ -112,7 +95,7 @@ export class NotificationWidget extends PureComponent<Props, State> {
                 }' | '${NotificationPosition.BottomLeft}'.`
             );
         }
-        if (!this.isNotificationType(type)) {
+        if (!isNotificationType(type)) {
             throw new Error(
                 `'type' argument should be one of '${
                     NotificationType.Alert
