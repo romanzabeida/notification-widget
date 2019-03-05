@@ -131,6 +131,7 @@ export class NotificationWidget extends PureComponent<IProps, IState> {
             );
         }
 
+        // TODO: pass down to component
         const id = uuid();
         const inStateNotifications = this.state.notifications;
         const inStateNotificationsByPosition = inStateNotifications[position];
