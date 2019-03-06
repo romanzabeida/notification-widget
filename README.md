@@ -17,7 +17,7 @@ NotificationWidget.show('Some notification text', 'tl', 'info')
 
 Now you should be able to see notification with text `Some notification text` in top-left corner of page.
 
-Link to `NotificationWidget` component API is set to `window` using React's `ref` mechanism in `src/index.tsx`:
+Link to `NotificationWidget` component API is set to `window` using React's `ref` mechanism in [src/index.tsx](https://github.com/romanzabeida/notification-widget/blob/master/src/index.tsx):
 
 ```javascript
 componentDidMount(): void {
