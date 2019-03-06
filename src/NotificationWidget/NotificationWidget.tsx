@@ -6,6 +6,7 @@ import {
     Notification,
     Position,
     Type,
+    INotificationWidget,
     assertIfEmptyString,
     assertIfNonPosition,
     assertIfNotType
@@ -20,7 +21,8 @@ type Props = {
 
 type State = { [key in Position]: Notification[] };
 
-export class NotificationWidget extends PureComponent<Props, State> {
+export class NotificationWidget extends PureComponent<Props, State>
+    implements INotificationWidget {
     static defaultProps = {
         dismissDelay: DismissDelay
     };

@@ -11,7 +11,7 @@ class App extends Component<any> {
     > = React.createRef();
 
     componentDidMount(): void {
-        (window as any).NotificationsWidget = {
+        (window as any).NotificationWidget = {
             show: this.notificationWidgetRef!.current!.show.bind(
                 this.notificationWidgetRef.current
             )

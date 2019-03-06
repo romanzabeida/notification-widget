@@ -18,6 +18,10 @@ export type Notification = {
     type: Type;
 };
 
+export interface INotificationWidget {
+    show(message: string, position: Position, type: Type): void;
+}
+
 export function assertIfEmptyString(message: any): void {
     if (typeof message !== 'string' || !message) {
         throw new Error(`'message' argument should be a non empty string.`);
