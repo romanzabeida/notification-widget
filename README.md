@@ -38,6 +38,6 @@ To run tests you need to call:
 
 Source code you'd like to check is located under `src/NotificationWidget` directory.
 
-## TODO: 
+## TODO
 
 Need to introduce an acceptance test for notification flow.
